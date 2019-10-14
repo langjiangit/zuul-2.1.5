@@ -229,7 +229,8 @@ public class PooledConnection {
     public void removeReadTimeoutHandler()
     {
         // Remove (and therefore destroy) the readTimeoutHandler when we release the
-        // channel back to the pool. As don't want it timing-out when it's not in use.
+        // channel back to the pool. As don't want it timing-out when it's not in use.//在释放时移除(并因此销毁)readTimeoutHandler
+//通道返回池。因为不想在不用的时候超时。
         final ChannelPipeline pipeline = getChannel().pipeline();
         removeHandlerFromPipeline(READ_TIMEOUT_HANDLER_NAME, pipeline);
     }

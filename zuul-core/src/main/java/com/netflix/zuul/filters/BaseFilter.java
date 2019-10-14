@@ -43,7 +43,13 @@ import static org.mockito.Mockito.when;
  * <p/>
  * ZuulFilters may be disabled using Archaius Properties.
  * <p/>
- * By default ZuulFilters are static; they don't carry state. This may be overridden by overriding the isStaticFilter() property to false
+ * By default ZuulFilters are static; they don't carry state. This may be overridden by overriding the isStaticFilter() property to falseZuulFilters的基本抽象类。基类定义了一些抽象方法来定义:filterType()——根据类型对筛选器进行分类。Zuul中的标准类型包括用于路由前过滤的“pre”、用于路由到源的“route”、用于路由后过滤的“post”和用于错误处理的“error”。我们也支持静态响应的“静态”类型。
+
+ 还必须为过滤器定义filterOrder()。如果优先级对筛选器不重要，则筛选器可能具有相同的筛选顺序。过滤命令不需要是连续的。
+
+ 可以使用Archaius属性禁用ZuulFilters。
+
+ 默认情况下ZuulFilters是静态的;他们不携带州。这可以通过将isStaticFilter()属性重写为false来覆盖
  *
  * @author Mikey Cohen
  *         Date: 10/26/11

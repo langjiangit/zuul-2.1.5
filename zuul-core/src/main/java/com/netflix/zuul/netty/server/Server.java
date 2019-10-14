@@ -92,11 +92,11 @@ public class Server
         LOG.warn("Shutting down Zuul.");
         serverGroup.stop();
 
-        // remove the shutdown hook that was added when the proxy was started, since it has now been stopped
+        // remove the shutdown hook that was added when the proxy was started, since it has now been stopped删除代理启动时添加的关闭挂钩，因为它现在已经停止
         try {
             Runtime.getRuntime().removeShutdownHook(jvmShutdownHook);
         } catch (IllegalStateException e) {
-            // ignore -- IllegalStateException means the VM is already shutting down
+            // ignore -- IllegalStateException means the VM is already shutting down忽略——IllegalStateException意味着VM已经关闭了
         }
 
         LOG.warn("Completed zuul shutdown.");
@@ -224,7 +224,7 @@ public class Server
 
         private void initializeTransport()
         {
-            // TODO - try our own impl of ChooserFactory that load-balances across the eventloops using leastconns algo?
+            // TODO - try our own impl of ChooserFactory that load-balances across the eventloops using leastconns algo?尝试我们自己的impl ChooserFactory，使用leastconns algo在事件循环之间进行负载平衡。
             EventExecutorChooserFactory chooserFactory;
             if (USE_LEASTCONNS_FOR_EVENTLOOPS.get()) {
                 chooserFactory = new LeastConnsEventLoopChooserFactory(eventLoopGroupMetrics);
@@ -272,14 +272,17 @@ public class Server
             }
 
             // Flag status as down.
-            // TODO - is this _only_ changing the local status? And therefore should we also implement a HealthCheckHandler
-            // that we can flag to return DOWN here (would that then update Discovery? or still be a delay?)
+            // TODO - is this _only_ changing the local status? And therefore should we also implement a HealthCheckHandler这只是改变了本地状态吗?因此，我们也应该实现一个HealthCheckHandler
+            // that we can flag to return DOWN here (would that then update Discovery? or still be a delay?)我们可以标记返回到下面这里(然后更新发现吗?还是仍然是一个延迟?)
             serverStatusManager.localStatus(InstanceInfo.InstanceStatus.DOWN);
 
             // Shutdown each of the client connections (blocks until complete).
             // NOTE: ClientConnectionsShutdown can also be configured to gracefully close connections when the
             // discovery status changes to DOWN. So if it has been configured that way, then this will be an additional
-            // call to gracefullyShutdownClientChannels(), which will be a noop.
+            // call to gracefullyShutdownClientChannels(), which will be a noop.//关闭每个客户端连接(直到完成为止)。
+//注意:还可以将ClientConnectionsShutdown配置为在
+//发现状态变为DOWN。如果它是这样配置的，那么这将是一个额外的
+//调用gracefullyShutdownClientChannels()，这将是一个noop。
             clientConnectionsShutdown.gracefullyShutdownClientChannels();
 
             LOG.warn("Shutting down event loops");

@@ -25,7 +25,7 @@ import com.netflix.zuul.message.ZuulMessage;
 public interface ShouldFilter<T extends ZuulMessage>
 {
     /**
-     * a "true" return from this method means that the apply() method should be invoked
+     * a "true" return from this method means that the apply() method should be invoked这个方法的“true”返回意味着应该调用apply()方法
      *
      * @return true if the apply() method should be invoked. false will not invoke the apply() method
      */

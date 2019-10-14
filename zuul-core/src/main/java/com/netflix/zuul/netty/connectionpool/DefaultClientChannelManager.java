@@ -230,36 +230,37 @@ public class DefaultClientChannelManager implements ClientChannelManager {
         boolean released = false;
 
         if (conn.isShouldClose() ||
-                // if the connection has been around too long (i.e. too many requests), then close it
+                // if the connection has been around too long (i.e. too many requests), then close it如果连接太长(即请求太多)，那么关闭它
                 conn.getUsageCount() > connPoolConfig.getMaxRequestsPerConnection()) {
 
-            // Close and discard the connection, as it has been flagged (possibly due to receiving a non-channel error like a 503).
+            // Close and discard the connection, as it has been flagged (possibly due to receiving a non-channel error like a 503).关闭并丢弃连接，因为它已被标记(可能由于接收到非通道错误，如503)。
             conn.setInPool(false);
             conn.close();
         }
         else if (stats.isCircuitBreakerTripped()) {
-            // Don't put conns for currently circuit-tripped servers back into the pool.
+            // Don't put conns for currently circuit-tripped servers back into the pool.不要将当前电路故障服务器的conn放回池中。
             conn.setInPool(false);
             conn.close();
         }
         else if (!conn.isActive()) {
-            // Connection is already closed, so discard.
+            // Connection is already closed, so discard.连接已关闭，请丢弃。
             alreadyClosedCounter.increment();
-            // make sure to decrement OpenConnectionCounts
+            // make sure to decrement OpenConnectionCounts确保减少OpenConnectionCounts
             conn.updateServerStats();
             conn.setInPool(false);
         }
         else {
             releaseHandlers(conn);
 
-            // Attempt to return connection to the pool.
+            // Attempt to return connection to the pool.尝试返回到池的连接。
             IConnectionPool pool = perServerPools.get(conn.getServer());
             if (pool != null) {
                 released = pool.release(conn);
             }
             else {
                 // The pool for this server no longer exists (maybe due to it failling out of
-                // discovery).
+                // discovery).//这个服务器的内存池已经不存在了(可能是内存溢出的原因)
+//发现)。
                 conn.setInPool(false);
                 released = false;
                 conn.close();
@@ -293,14 +294,15 @@ public class DefaultClientChannelManager implements ClientChannelManager {
             return false;
         }
 
-        // Attempt to remove the connection from the pool.
+        // Attempt to remove the connection from the pool.尝试从池中删除连接。
         IConnectionPool pool = perServerPools.get(conn.getServer());
         if (pool != null) {
             return pool.remove(conn);
         }
         else {
             // The pool for this server no longer exists (maybe due to it failling out of
-            // discovery).
+            // discovery).//这个服务器的内存池已经不存在了(可能是内存溢出的原因)
+//发现)。
             conn.setInPool(false);
             connsInPool.decrementAndGet();
             return false;

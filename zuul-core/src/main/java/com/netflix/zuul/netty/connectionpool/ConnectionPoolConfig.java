@@ -24,7 +24,7 @@ public interface ConnectionPoolConfig {
     /* Origin name from connection pool */
     String getOriginName();
 
-    /* Max number of requests per connection before it needs to be recycled */
+    /* Max number of requests per connection before it needs to be recycled 每个连接需要回收之前的最大请求数*/
     int getMaxRequestsPerConnection();
 
     /* Max connections per host */

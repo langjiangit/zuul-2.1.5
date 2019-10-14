@@ -81,7 +81,7 @@ public class ClientConnectionsShutdown
     }
 
     /**
-     * Note this blocks until all the channels have finished closing.
+     * Note this blocks until all the channels have finished closing.请注意这将阻塞，直到所有通道都已关闭。
      */
     public void gracefullyShutdownClientChannels()
     {

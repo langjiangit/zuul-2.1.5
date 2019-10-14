@@ -74,7 +74,8 @@ public class LeastConnsEventLoopChooserFactory implements EventExecutorChooserFa
             Map<Thread, Integer> connsPer = groupMetrics.connectionsPerEventLoop();
 
             // Shuffle the list of executors each time so that if they all have the same number of connections, then
-            // we don't favour the 1st one.
+            // we don't favour the 1st one.//每次都将执行人的名单洗牌，如果他们的连接数相同，则
+//我们不喜欢前者。
             Collections.shuffle(executors, ThreadLocalRandom.current());
             
             for (EventExecutor executor : executors)

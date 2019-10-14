@@ -23,7 +23,6 @@ import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpHeaderNames;
-import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.timeout.IdleStateEvent;
 import org.slf4j.Logger;
@@ -72,7 +71,9 @@ public class ConnectionPoolHandler extends ChannelDuplexHandler
         else if (evt instanceof CompleteEvent) {
             // The HttpLifecycleChannelHandler instance will fire this event when either a response has finished being written, or
             // the channel is no longer active or disconnected.
-            // Return the connection to pool.
+            // Return the connection to pool.// HttpLifecycleChannelHandler实例将在响应写完或之后触发该事件
+//该通道不再激活或断开连接。
+//将连接返回到池。
             CompleteEvent completeEvt = (CompleteEvent) evt;
             final CompleteReason reason = completeEvt.getReason();
             if (reason == SESSION_COMPLETE) {
@@ -131,7 +132,8 @@ public class ConnectionPoolHandler extends ChannelDuplexHandler
         }
         else {
             // If somehow we don't have a PooledConnection instance attached to this channel, then
-            // close the channel directly.
+            // close the channel directly.//如果我们没有连接到这个通道的PooledConnection实例，那么
+//直接关闭通道。
             LOG.warn(msg + " But no PooledConnection attribute. So just closing Channel.");
             ctx.close();
         }

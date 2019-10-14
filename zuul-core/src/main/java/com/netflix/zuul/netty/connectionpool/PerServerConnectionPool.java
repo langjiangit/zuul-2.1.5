@@ -73,7 +73,7 @@ public class PerServerConnectionPool implements IConnectionPool
 
     /** 
      * This is the count of connections currently in progress of being established. 
-     * They will only be added to connsInUse _after_ establishment has completed.
+     * They will only be added to connsInUse _after_ establishment has completed.这是当前正在建立的连接数。他们只会在建厂完成后才会加入康城。
      */
     private final AtomicInteger connCreationsInProgress;
 
@@ -138,7 +138,7 @@ public class PerServerConnectionPool implements IConnectionPool
     }
 
 
-    /** function to run when a connection is acquired before returning it to caller. */
+    /** function to run when a connection is acquired before returning it to caller.函数，用于在将连接返回给调用方之前获取连接时运行。 */
     private void onAcquire(final PooledConnection conn, String httpMethod, String uriStr, 
                            int attemptNum, CurrentPassport passport)
     {
@@ -163,10 +163,10 @@ public class PerServerConnectionPool implements IConnectionPool
         
         Promise<PooledConnection> promise = eventLoop.newPromise();
 
-        // Try getting a connection from the pool.
+        // Try getting a connection from the pool.尝试从池中获得连接。
         final PooledConnection conn = tryGettingFromConnectionPool(eventLoop);
         if (conn != null) {
-            // There was a pooled connection available, so use this one.
+            // There was a pooled connection available, so use this one.有一个可用的池连接，所以使用这个。
             conn.startRequestTimer();
             conn.incrementUsageCount();
             conn.getChannel().read();
@@ -175,7 +175,7 @@ public class PerServerConnectionPool implements IConnectionPool
             selectedHostAddr.set(getHostFromServer(conn.getServer()));
         }
         else {
-            // connection pool empty, create new connection using client connection factory.
+            // connection pool empty, create new connection using client connection factory.连接池为空，使用客户端连接工厂创建新连接。
             tryMakingNewConnection(eventLoop, promise, httpMethod, uri, attemptNum, passport, selectedHostAddr);
         }
 
@@ -211,14 +211,15 @@ public class PerServerConnectionPool implements IConnectionPool
     }
 
     protected void initPooledConnection(PooledConnection conn, Promise<PooledConnection> promise) {
-        // add custom init code by overriding this method
+        // add custom init code by overriding this method通过覆盖此方法添加自定义init代码
         promise.setSuccess(conn);
     }
 
     protected Deque<PooledConnection> getPoolForEventLoop(EventLoop eventLoop)
     {
         // We don't want to block under any circumstances, so can't use CHM.computeIfAbsent().
-        // Instead we accept the slight inefficiency of an unnecessary instantiation of a ConcurrentLinkedDeque.
+        // Instead we accept the slight inefficiency of an unnecessary instantiation of a ConcurrentLinkedDeque.//我们不想在任何情况下阻塞，所以不能使用CHM.computeIfAbsent()。
+//        相反，我们接受了ConcurrentLinkedDeque不必要实例化的低效率。
 
         Deque<PooledConnection> pool = connectionsPerEventLoop.get(eventLoop);
         if (pool == null) {
@@ -258,7 +259,8 @@ public class PerServerConnectionPool implements IConnectionPool
             // Choose to use either IP or hostname.
             String host = getHostFromServer(server);
             selectedHostAddr.set(host);
-            
+
+//            连接netty server
             final ChannelFuture cf = connectToServer(eventLoop, passport, host);
 
             if (cf.isDone()) {
@@ -341,6 +343,7 @@ public class PerServerConnectionPool implements IConnectionPool
             createConnSucceededCounter.increment();
             connsInUse.incrementAndGet();
 
+//            创建连接
             createConnection(cf, callerPromise, httpMethod, uri, attemptNum, passport);
         }
         else {
@@ -364,8 +367,8 @@ public class PerServerConnectionPool implements IConnectionPool
     }
 
     @Override
-    public boolean release(PooledConnection conn)
     {
+    public boolean release(PooledConnection conn)
         if (conn == null) {
             return false;
         }
@@ -379,14 +382,14 @@ public class PerServerConnectionPool implements IConnectionPool
         
         CurrentPassport passport = CurrentPassport.fromChannel(conn.getChannel());
 
-        // Discard conn if already at least above waterline in the pool already for this server.
+        // Discard conn if already at least above waterline in the pool already for this server.如果这个服务器已经在池中的水线以上，则丢弃conn。
         int poolWaterline = config.perServerWaterline();
         if (poolWaterline > -1 && connections.size() >= poolWaterline) {
             conn.close();
             conn.setInPool(false);
             return false;
         }
-        // Attempt to return connection to the pool.
+        // Attempt to return connection to the pool.尝试返回到池的连接。
         else if (connections.offer(conn)) {
             conn.setInPool(true);
             connsInPool.incrementAndGet();
@@ -394,7 +397,7 @@ public class PerServerConnectionPool implements IConnectionPool
             return true;
         }
         else {
-            // If the pool is full, then close the conn and discard.
+            // If the pool is full, then close the conn and discard.如果池已满，则关闭连接并丢弃。
             conn.close();
             conn.setInPool(false);
             return false;
@@ -411,10 +414,10 @@ public class PerServerConnectionPool implements IConnectionPool
             return false;
         }
 
-        // Get the eventloop for this channel.
+        // Get the eventloop for this channel.获取此通道的eventloop。
         EventLoop eventLoop = conn.getChannel().eventLoop();
 
-        // Attempt to return connection to the pool.
+        // Attempt to return connection to the pool.尝试返回到池的连接。
         Deque<PooledConnection> connections = getPoolForEventLoop(eventLoop);
         if (connections.remove(conn)) {
             conn.setInPool(false);

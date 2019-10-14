@@ -20,20 +20,20 @@ package com.netflix.zuul.netty.connectionpool;
 import com.netflix.zuul.exception.ErrorType;
 
 /**
- * Wrapper for exceptions failing to connect to origin with details on which server failed the attempt.
+ * Wrapper for exceptions failing to connect to origin with details on which server failed the attempt.失败连接到原始服务器的异常包装器，详细说明哪个服务器失败。
  */
 public class OriginConnectException extends Exception {
 
     private final ErrorType errorType;
 
     public OriginConnectException(String message, ErrorType errorType) {
-        // ensure this exception does not fill its stacktrace, this causes a 10x slowdown
+        // ensure this exception does not fill its stacktrace, this causes a 10x slowdown确保此异常不填充其堆栈跟踪，这将导致10倍的减速
         super(message, null, true, false);
         this.errorType = errorType;
     }
 
     public OriginConnectException(String message, Throwable cause, ErrorType errorType) {
-        // ensure this exception does not fill its stacktrace, this causes a 10x slowdown
+        // ensure this exception does not fill its stacktrace, this causes a 10x slowdown确保此异常不填充其堆栈跟踪，这将导致10倍的减速
         super(message, cause, true, false);
         this.errorType = errorType;
     }
