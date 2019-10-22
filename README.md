@@ -1,11 +1,9 @@
 # Zuul
 
-<img src="https://i.imgur.com/mRSosEp.png" width=500/>
 
 [![Build Status](https://travis-ci.org/Netflix/zuul.svg)](https://travis-ci.org/Netflix/zuul/builds)
 
-Zuul is an edge service that provides dynamic routing, monitoring, resiliency, security, and more.
-Please view the wiki for usage
+Zuul是一种边缘服务，提供动态路由、监视、弹性、安全性等
 
 ## 源码解析目录
 
